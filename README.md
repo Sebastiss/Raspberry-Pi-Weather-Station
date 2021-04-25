@@ -12,9 +12,11 @@ Simple Weather Station bassed on Raspberry Pi Computer with two sensors and Offi
 
 ## Used parts
 For the purpose of this project I use:
+* Raspberry Pi Zero W WH/Raspberry Pi 3B+
 * Bosh BME280 sensor
 * THT DS18B20 sensor with weather isolation
-* Pi Camera Module v2 8MPx  
+* Pi Camera Module v2 8MPx
+* optional Pimoroni Enviro pHat
 	
 ## Technologies
 Project is created with:
