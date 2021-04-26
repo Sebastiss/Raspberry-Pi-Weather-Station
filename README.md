@@ -16,7 +16,7 @@
 Simple Weather Station bassed on Raspberry Pi Computer with two sensors and Offical Raspberry Pi Camera Module V2.
 
 ## Screenshots
-![Example screenshot](./img/screenshot.png)
+![Example screenshot](./img/weather.png)
 
 ## Used parts
 For the purpose of this project I use:
