@@ -20,14 +20,8 @@ while True:
       it = it + 1
   # Value range is [0,255]
   avg = s/it
-  t1 = 100
-  t2 = 200 # TODO 
+
   print(avg)
-  if avg >= 0 and avg <= t1:
-    print("NIGHT")
-  if avg > t1 and avg <= t2:
-      print("CLOUDY")
-  if avg > t2 and avg <= 255:
-      print("SUNNY")
+
   time.sleep(10)
 # cv2.waitKey(0)
