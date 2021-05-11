@@ -21,7 +21,7 @@ while True:
   # Value range is [0,255]
   avg = s/it
   t1 = 75
-  t2 = 160 # TODO 
+  t2 = 160
   print(avg)
   if avg >= 0 and avg <= t1:
     print("NIGHT")
