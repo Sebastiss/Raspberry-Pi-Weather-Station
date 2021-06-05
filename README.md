@@ -21,9 +21,12 @@ Simple Weather Station bassed on Raspberry Pi Computer with two sensors and Offi
 ## Used parts
 For the purpose of this project I use:
 * Raspberry Pi Zero W WH/Raspberry Pi 3B+
-* Bosh BME280 sensor
-* THT DS18B20 sensor with weather isolation
+* BME280 I2C/SPI 3,3V Temperature Humidity Pressure Sensor
+* Waterproof 1-Wire DS18B20 Compatible Digital temperature sensor
 * Pi Camera Module v2 8MPx
+* Breadboard PCB 
+* Jumper wires
+* 4.7k resistor
 * optional Pimoroni Enviro pHat
 	
 ## Technologies
@@ -31,10 +34,11 @@ Project is created with technologies:
 * Python 3.X scripts
 * Bash scripts
 * OpenCV 4
-* HTML 5/CSS/PHP 7.X
+* MariaDB DataBase
+* Grafana
 	
 ## Setup
-To run this project, install it locally using npm: - in progress
+To run this project, install it locally using npm:
 
 ```
 Setup my project is in progress
@@ -44,14 +48,15 @@ Setup my project is in progress
 List of features which I want to develop
 To-do list:
 * Recognition by the image she condition
-* Read data from the sensors and represnets values on a web-site
+* Read data from the sensors
+* Represnets stored data on a web-site
 * Get notification about sky condtion
 * Sky image recognition using OpenCV and RPi Camera Module
-* Read and store data form the sensors
-* Represent store data on a web-site
+* Read and store data form the sensors in database
+
 
 ## Status
-Project is: _in progress_
+Project is: _finished_
 
 ## Inspiration
 My project is inspired by Christopher Barnatt and his projects about Weather Station [Link to the Video](https://www.youtube.com/watch?v=ChQpD2gsC20)
