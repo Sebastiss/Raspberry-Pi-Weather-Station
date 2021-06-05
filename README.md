@@ -38,7 +38,71 @@ Project is created with technologies:
 * Grafana
 	
 ## Setup
-To run this project, install it locally using npm:
+Download the project files by runing this command:
+```
+git clone https://github.com/Sebastiss/Raspberry-Pi-Weather-Station.git
+```
+To run this project follow the instruciotns belllow:
+1. Make sure that you runing the latest verion of Raspberry Pi OS System
+⋅⋅⋅RUn the following line to check the updates:
+```
+sudo apt update && sudo apt full-upgrade -y
+```
+2. Install the camera module.
+⋅⋅⋅Use instructions from offical [Raspberry Pi Documentation](https://www.raspberrypi.org/documentation/configuration/camera.md)
+2.1. If you connect the Raspberry Pi correctly you can run some simple test to check that your system is up and runing smoothly.
+⋅⋅⋅Go to test direcotry in download project:
+```
+cd $HOME/Raspberry-Pi-Weather-Station/tests
+```
+⋅⋅⋅and try runing the following script
+```
+python3 time-lapse.py
+```
+3. Next step will be run the following bash script from repository to downlaod all necessary librarys and dependencies for OpenCV
+⋅⋅⋅Go to the scirpts directory and run the following script
+```
+./installOpenCV.sh
+```
+⋅⋅⋅If the file is not executable try this comand first
+```
+sudo chmod +x installOpenCV.sh
+```
+⋅⋅⋅then try again run the script
+4. When everyting is install try run another test scirpts form this repository:
+```
+python3 test-opencv.py
+```
+⋅⋅⋅To shutdown this script just press any key on a keyboard.
+⋅⋅⋅You can try run another test script with inverted pallet collors:
+```
+python3 bgrTOhsv.py
+```
+5. Install the MariaDB Data Base server and drivers to communicate with them:
+```
+sudo apt-get install mariadb-server
+sudo apt-get install python-mysqldb
+pip3 install mariadb
+```
+5.1. After installation process try get to the MariaDB by typing the following command:
+```
+sudo mysql --user=root
+```
+5.2. Create new user for this project purpose I create the user ```admin``` identified by password ```admin```
+```
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
+```
+5.3. Add new user privileges
+```
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
+```
+5.4. Exit the MariaDB termianl by typing ```exit;``` adn try login as a new user:
+```
+mariadb -u admin -p
+```
+5.5. The system schould ask you to enter the password. When you type a password know letters/starts schould be visible.
+
+, install it locally using npm:
 
 ```
 Setup my project is in progress
