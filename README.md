@@ -75,28 +75,28 @@ python3 test-opencv.py
 ```
 ⋅⋅⋅To shutdown this script just press any key on a keyboard.
 ⋅⋅⋅You can try run another test script with inverted pallet collors:
-```
+```python
 python3 bgrTOhsv.py
 ```
 5. Install the MariaDB Data Base server and drivers to communicate with them:
-```
+```bash
 sudo apt-get install mariadb-server
 sudo apt-get install python-mysqldb
 pip3 install mariadb
 ```
 5.1. After installation process try get to the MariaDB by typing the following command:
-```
+```bash
 sudo mysql --user=root
 ```
-5.2. Create new user for this project purpose I create the user ```admin``` identified by password ```admin```
-```
+5.2. Create new user for this project purpose I create the user `admin` identified by password `admin`
+```mysql
 CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
 ```
 5.3. Add new user privileges
-```
+```mysql
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
 ```
-5.4. Exit the MariaDB termianl by typing ```exit;``` adn try login as a new user:
+5.4. Exit the MariaDB termianl by typing `exit;` adn try login as a new user:
 ```
 mariadb -u admin -p
 ```
