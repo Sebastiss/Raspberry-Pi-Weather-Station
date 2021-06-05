@@ -61,11 +61,11 @@ python3 time-lapse.py
 ```
 3. Next step will be run the following bash script from repository to downlaod all necessary librarys and dependencies for OpenCV
 ⋅⋅⋅Go to the scirpts directory and run the following script
-```
+```bash
 ./installOpenCV.sh
 ```
 ⋅⋅⋅If the file is not executable try this comand first
-```
+```bash
 sudo chmod +x installOpenCV.sh
 ```
 ⋅⋅⋅then try again run the script
@@ -75,17 +75,17 @@ python3 test-opencv.py
 ```
 ⋅⋅⋅To shutdown this script just press any key on a keyboard.
 ⋅⋅⋅You can try run another test script with inverted pallet collors:
-```python
+```
 python3 bgrTOhsv.py
 ```
 5. Install the MariaDB Data Base server and drivers to communicate with them:
-```bash
+```
 sudo apt-get install mariadb-server
 sudo apt-get install python-mysqldb
 pip3 install mariadb
 ```
 5.1. After installation process try get to the MariaDB by typing the following command:
-```bash
+```
 sudo mysql --user=root
 ```
 5.2. Create new user for this project purpose I create the user `admin` identified by password `admin`
@@ -101,6 +101,19 @@ GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
 mariadb -u admin -p
 ```
 5.5. The system schould ask you to enter the password. When you type a password know letters/starts schould be visible.
+6. Add database to your project:
+```mysql
+ create database weather_station;
+```
+5.6. Then go out form mysql shell and import database from the file:
+```mysql
+mysql -u admin -p weather_station < backup-file.sql
+```
+5.7. If everyfing go fine try run this script
+```
+python3 test_camera.py
+```
+6. Connect the Bosh BME280 sensor to the Raspberry Pi
 
 , install it locally using npm:
 
