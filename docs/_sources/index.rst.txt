@@ -1,0 +1,30 @@
+.. Raspberry Pi Weather Station documentation master file, created by
+   sphinx-quickstart on Tue Jun  8 21:47:38 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Raspberry Pi Weather Station's documentation!
+========================================================
+
+About this project
+==================
+Build your own weather station for collecting local climate and environmental data.
+Once you’ve got everything running and tested,
+You can turn this project into a more complicated and expanded build.
+Eveything is in your hands.
+Good luck
+You can create this project yourself by visiting `Project website <https://github.com/Sebastiss/Raspberry-Pi-Weather-Station>`_.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   modules
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
