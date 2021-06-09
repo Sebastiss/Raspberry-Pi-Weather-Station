@@ -1,0 +1,7 @@
+ds18b20 module
+==============
+
+.. automodule:: ds18b20
+   :members:
+   :undoc-members:
+   :show-inheritance:

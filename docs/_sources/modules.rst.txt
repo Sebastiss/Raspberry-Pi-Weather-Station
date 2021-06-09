@@ -1,0 +1,9 @@
+weather_station
+===============
+
+.. toctree::
+   :maxdepth: 4
+
+   bme280sensor
+   camera
+   ds18b20

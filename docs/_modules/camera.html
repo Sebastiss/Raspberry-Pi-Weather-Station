@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>camera &mdash; Raspberry Pi Weather Station 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Raspberry Pi Weather Station
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">weather_station</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Raspberry Pi Weather Station</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>camera</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for camera</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">camera</span>
+<span class="sd">================================================================================</span>
+<span class="sd">Read brightness value form camera module in the same periods of time.</span>
+<span class="sd">The brightness data are displayed on the screen and saved in MariaDB Data Base </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">picamera.array</span> <span class="k">import</span> <span class="n">PiRGBArray</span>
+<span class="kn">from</span> <span class="nn">picamera</span> <span class="k">import</span> <span class="n">PiCamera</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="kn">import</span> <span class="nn">mariadb</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<div class="viewcode-block" id="connect"><a class="viewcode-back" href="../camera.html#camera.connect">[docs]</a><span class="k">def</span> <span class="nf">connect</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize the connection with MariaDB Server and insert data in selected table</span>
+<span class="sd">    :return cur: cursor of the database</span>
+<span class="sd">    :return db: object of the opened database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">mariadb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+                                <span class="n">user</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
+                                <span class="n">passwd</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
+                                <span class="n">db</span><span class="o">=</span><span class="s1">&#39;weather_station&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Connect to data base : OK&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">mariadb</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Error connecting to MariaDB Platform: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cur</span><span class="p">,</span> <span class="n">db</span></div>
+
+
+<div class="viewcode-block" id="readData"><a class="viewcode-back" href="../camera.html#camera.readData">[docs]</a><span class="k">def</span> <span class="nf">readData</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">wait</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up the camera and take a picture</span>
+<span class="sd">    Read data from each pixel and get vaule</span>
+<span class="sd">    Next convert the picture color model from BGR to HSV </span>
+<span class="sd">    Calculating the average vaule from picture</span>
+<span class="sd">    insert information to data base</span>
+<span class="sd">    :param sensor: object describring the sensor</span>
+<span class="sd">    :param cur: cursor of the database</span>
+<span class="sd">    :param db: db object</span>
+<span class="sd">    :param wait (int): value which defined amount of seconds bettwen next measurements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">imageCapture</span> <span class="o">=</span> <span class="n">PiRGBArray</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span><span class="mi">480</span><span class="p">))</span>
+    <span class="n">camera</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="n">imageCapture</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;bgr&quot;</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">imageCapture</span><span class="o">.</span><span class="n">array</span>
+    <span class="c1"># Converting the picture from BGR to HSV model color </span>
+    <span class="n">imageHSV</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2HSV</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># calculating the average vaule from picture</span>
+    <span class="c1"># read data from each pixel and get vaule</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">imageHSV</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">col</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># value</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="n">it</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># Value range is [0,255]</span>
+    <span class="c1"># averge of vaule from HSV Color model</span>
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">s</span><span class="o">/</span><span class="n">it</span>
+    <span class="c1"># percent average</span>
+    <span class="n">percentavg</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">avg</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mi">255</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># seting up down vaule for each section</span>
+    <span class="c1"># sunny down value</span>
+    <span class="n">sunny</span> <span class="o">=</span> <span class="mi">171</span>
+    <span class="c1"># cloudy down value</span>
+    <span class="n">cloudy</span> <span class="o">=</span> <span class="mi">143</span>
+    <span class="c1"># overcast down value</span>
+    <span class="n">overcast</span> <span class="o">=</span> <span class="mi">98</span>
+    <span class="c1"># night down value</span>
+    <span class="n">night</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># insert information to data base</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="c1"># Append data to the data base</span>
+      <span class="c1"># section - for my purpose I defined four individual groups</span>
+      <span class="k">if</span> <span class="n">avg</span> <span class="o">&gt;=</span> <span class="n">night</span> <span class="ow">and</span> <span class="n">avg</span> <span class="o">&lt;</span> <span class="n">overcast</span><span class="p">:</span>
+          <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;INSERT INTO camera_data(value, description, percentage_intensity) VALUES(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">);&#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="s2">&quot;NIGHT&quot;</span><span class="p">,</span> <span class="n">percentavg</span><span class="p">))</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NIGHT &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">percentavg</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">avg</span> <span class="o">&gt;=</span> <span class="n">overcast</span> <span class="ow">and</span> <span class="n">avg</span> <span class="o">&lt;</span> <span class="n">cloudy</span><span class="p">:</span>
+          <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;INSERT INTO camera_data(value, description, percentage_intensity) VALUES(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">);&#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="s2">&quot;OVERCAST&quot;</span><span class="p">,</span> <span class="n">percentavg</span><span class="p">))</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OVERCAST &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">percentavg</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">avg</span> <span class="o">&gt;=</span> <span class="n">cloudy</span> <span class="ow">and</span> <span class="n">avg</span> <span class="o">&lt;</span> <span class="n">sunny</span><span class="p">:</span>
+          <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;INSERT INTO camera_data(value, description, percentage_intensity) VALUES(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">);&#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="s2">&quot;CLOUDY&quot;</span><span class="p">,</span> <span class="n">percentavg</span><span class="p">))</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CLOUDY &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">percentavg</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">avg</span> <span class="o">&gt;=</span> <span class="n">sunny</span> <span class="ow">and</span> <span class="n">avg</span> <span class="o">&lt;=</span> <span class="mi">255</span><span class="p">:</span>
+          <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;INSERT INTO camera_data(value, description, percentage_intensity) VALUES(</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">);&#39;&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="s2">&quot;SUNNY&quot;</span><span class="p">,</span> <span class="n">percentavg</span><span class="p">))</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SUNNY &quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">percentavg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">mariadb</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Error: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+    <span class="c1"># confirm the data transaction in data base</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="c1"># return the ID of the last inserted row of data in data base</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Last Inserted ID: </span><span class="si">{cur.lastrowid}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Wait defined amount of time (in secounds)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="n">wait</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="readBrightness"><a class="viewcode-back" href="../camera.html#camera.readBrightness">[docs]</a><span class="k">def</span> <span class="nf">readBrightness</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main loop of the **camera** scipt</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Careate object of Picamera and set the resolution</span>
+    <span class="n">camera</span> <span class="o">=</span> <span class="n">PiCamera</span><span class="p">()</span>
+    <span class="n">camera</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">)</span>
+
+    <span class="c1"># set the value to wait defined amount of seconds bettwen next measurements</span>
+
+    <span class="n">cur</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">readData</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Close the connection with data base</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;closing connection : OK&#39;</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">readBrightness</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Sebastian Wojtaszek.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
