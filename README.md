@@ -59,10 +59,10 @@ cd $HOME/Raspberry-Pi-Weather-Station/tests
 ```
 python3 time-lapse.py
 ```
-3. Next step will be run the following bash script from repository to downlaod all necessary librarys and dependencies for OpenCV
+3. Next step will be run the following bash script from the repository to downlaod all necessary librarys and dependencies for all project scirpts.
 ⋅⋅⋅Go to the scirpts directory and run the following script
 ```bash
-./installOpenCV.sh
+./InstallPackages.sh
 ```
 ⋅⋅⋅If the file is not executable try this comand first
 ```bash
@@ -114,16 +114,41 @@ mysql -u admin -p weather_station < backup-file.sql
 python3 test_camera.py
 ```
 6. Connect the Bosh BME280 sensor to the Raspberry Pi
+⋅⋅⋅Now let's conect the sensor to the Raspberry Pi GPIO Hheader using jumper wires. 
+⋅⋅⋅THe picture above show the diagram on Raspberry PI ![Example screenshot](./img/GPIOPinoutDiagramBME280.png)
+Connect the color wires to selected pin form the sensor:
+* 17 (3V3) 	Vin	RED
+* 6 (Gnd) 	Gnd	BLACK
+* 3 (SDA) 	SDA (SDI) PURPLE
+* 5 (SCL) 	SCL (SCK) ORANGE
 
-, install it locally using npm:
+6.1 Check if the sensor is install corectly by starting the test:
+```
+python3 test_bme280sensor.py
+```
+⋅⋅⋅If program starts without any error and start returning data on the screen you can go to the next point
+⋅⋅⋅If some problem occur check this [web site](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout)
+⋅⋅⋅Another website when you can find sollution for your problems[Link](https://shop.pimoroni.com/products/bme280-breakout)
 
+7. Connect the DS18B20 sensor to the Raspberry Pi
+⋅⋅⋅To do this follow the instruction on [Adafrruit tutortial](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing)
+
+7.1. When you finished with totiral try run this test script
 ```
-Setup my project is in progress
+python3 test_ds18b20sensor.py
 ```
+⋅⋅⋅When nothing errors apperas you should be able to run the start.sh sript.
+⋅⋅⋅If you want to stop all readings type to the terminal comand executing stop.sh scipt
+⋅⋅⋅Example of usage:
+```
+./start.sh
+```
+8. In my case i display data using Grafana software.
+⋅⋅⋅If you would like to display and maange data readings like me try to install this tool by [Offical Grafana Website](https://grafana.com/tutorials/install-grafana-on-raspberry-pi/#install-grafana)
+⋅⋅⋅How to create your own Data Gasboard [Video](https://www.youtube.com/watch?v=WP8cpvX7nl0)
 
 ## Features
-List of features which I want to develop
-To-do list:
+List of features which is developed:
 * Recognition by the image she condition
 * Read data from the sensors
 * Represnets stored data on a web-site
